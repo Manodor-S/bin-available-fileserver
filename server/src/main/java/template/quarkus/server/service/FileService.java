@@ -37,6 +37,7 @@ public class FileService {
     }
 
     public void writeThrough(String file, String content) {
+        storage.put(file, content);
         syncFileServiceReplicas.parallelStream().forEach(fs -> fs.sync(file, new FileContent(content)));
     }
 
