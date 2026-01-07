@@ -2,9 +2,8 @@ package template.quarkus.common;
 
 import jakarta.ws.rs.*;
 
-public interface FileService {
-
-    record FileContent(String content) {}
+// Used by Client
+public interface ClientFileService {
 
     @POST
     @Path("/{file}")

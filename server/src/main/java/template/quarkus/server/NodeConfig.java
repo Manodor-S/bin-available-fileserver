@@ -13,7 +13,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import template.quarkus.server.service.FileServiceRegistry;
+import template.quarkus.server.service.SyncFileServiceRegistry;
 
 @Singleton
 public class NodeConfig {
@@ -27,7 +27,7 @@ public class NodeConfig {
     private Set<String> replicas;
 
     @Inject
-    private FileServiceRegistry fileServiceRegistry;
+    private SyncFileServiceRegistry syncFileServiceRegistry;
 
     public NodeConfig() {}
 
@@ -42,7 +42,7 @@ public class NodeConfig {
         inContext(() -> {
             for (String replica : replicas) {
                 log.info("Create REST Client for {}", replica);
-                fileServiceRegistry.add(replica);
+                syncFileServiceRegistry.add(replica);
             }
         });
     }
