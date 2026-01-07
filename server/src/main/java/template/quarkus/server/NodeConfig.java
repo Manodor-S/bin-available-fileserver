@@ -41,7 +41,7 @@ public class NodeConfig {
     public void configure() {
         inContext(() -> {
             for (String replica : replicas) {
-                log.info("Create REST Client for {}", replica);
+                log.info("Create Sync REST Client for {}", replica);
                 syncFileServiceRegistry.add(replica);
             }
         });
