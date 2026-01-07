@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class Client {
 
-    private static final String SERVER_URL = "http://localhost:8080/file";
+    private static final String SERVER_URL = "http://localhost:8080/api/file";
 
     public static void main(String[] args) throws Exception {
         Random random = new Random();
