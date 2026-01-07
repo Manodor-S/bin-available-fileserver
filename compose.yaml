@@ -1,0 +1,27 @@
+services:
+  bin-available-fileserver-lgtm:
+    image: 'grafana/otel-lgtm:latest'
+    container_name: bin-available-fileserver-lgtm
+    restart: unless-stopped
+    networks:
+      - bin-available-fileserver-net
+    ports:
+      - '3000:3000'
+      - '4317:4317'
+      - '4318:4318'
+    volumes:
+      - 'bin-available-fileserver-lgtm-grafana:/data/grafana'
+      - 'bin-available-fileserver-lgtm-prometheus:/data/prometheus'
+      - 'bin-available-fileserver-lgtm-loki:/data/loki'
+    environment:
+      - GF_PATHS_DATA=/data/grafana
+
+volumes:
+  bin-available-fileserver-lgtm-grafana: null
+  bin-available-fileserver-lgtm-prometheus: null
+  bin-available-fileserver-lgtm-loki: null
+
+networks:
+  bin-available-fileserver-net:
+    name: bin-available-fileserver-net
+    external: false
