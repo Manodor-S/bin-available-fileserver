@@ -1,12 +1,11 @@
 package template.quarkus.server;
 
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import io.quarkus.scheduler.Scheduled;
@@ -14,14 +13,12 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import template.quarkus.common.FileService;
+import template.quarkus.server.service.FileServiceRegistry;
 
 @Singleton
 public class NodeConfig {
 
     private static final Logger log = LoggerFactory.getLogger(NodeConfig.class);
-
-    private final Map<String, FileService> fileServiceReplicas = new ConcurrentHashMap<>();
 
     @ConfigProperty(name = "node.id")
     private String nodeId;
@@ -29,27 +26,38 @@ public class NodeConfig {
     @ConfigProperty(name = "node.replicas")
     private Set<String> replicas;
 
+    @Inject
+    private FileServiceRegistry fileServiceRegistry;
+
     public NodeConfig() {}
+
+    private void inContext(Runnable r) {
+        try (MDC.MDCCloseable _ = MDC.putCloseable("node_id", nodeId)) {
+            r.run();
+        }
+    }
 
     @PostConstruct
     public void configure() {
-        for (String replica : replicas) {
-            log.info("Create REST Client for {}", replica);
-            fileServiceReplicas.put(replica, DynamicFileService.createFileService(replica));
-        }
+        inContext(() -> {
+            for (String replica : replicas) {
+                log.info("Create REST Client for {}", replica);
+                fileServiceRegistry.add(replica);
+            }
+        });
     }
 
     @Scheduled(every = "30s", delay = 5, delayUnit = TimeUnit.SECONDS)
     public void maybeDisable() {
         double v = ThreadLocalRandom.current().nextDouble();
-        try (MDC.MDCCloseable closeable = MDC.putCloseable("node_id", nodeId)) {
+        inContext(() -> {
             if (v < 0.9) {
                 boolean die = v < 0.15;
                 setDisabled(die);
             } else {
                 setEnabled();
             }
-        }
+        });
     }
 
     public void setDisabled(boolean die) {
@@ -63,10 +71,6 @@ public class NodeConfig {
 
     public void setEnabled() {
         log.info("Node {} is back", nodeId);
-    }
-
-    public Map<String, FileService> getFileServiceReplicas() {
-        return fileServiceReplicas;
     }
 
     public String getNodeId() {
