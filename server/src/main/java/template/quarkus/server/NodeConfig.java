@@ -33,7 +33,7 @@ public class NodeConfig {
         double v = ThreadLocalRandom.current().nextDouble();
         try (MDC.MDCCloseable closeable = MDC.putCloseable("node_id", nodeId)) {
             if (v < 0.9) {
-                boolean die = v < 0.1;
+                boolean die = v < 0.15;
                 setDisabled(die);
             } else {
                 setEnabled();
