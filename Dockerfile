@@ -4,18 +4,18 @@ FROM maven:3-eclipse-temurin-25-alpine AS build
 
 WORKDIR /app
 
-COPY pom.xml .
+COPY pom.xml ./pom.xml
 COPY common/pom.xml ./common/pom.xml
 COPY client/pom.xml ./client/pom.xml
 COPY server/pom.xml ./server/pom.xml
 
-RUN mvn -B dependency:go-offline
+RUN --mount=type=cache,target=/root/.m2 mvn -B dependency:go-offline
 
 COPY common ./common
 COPY client ./client
 COPY server ./server
 
-RUN mvn -B clean package -DskipTests
+RUN --mount=type=cache,target=/root/.m2 mvn -B clean package -DskipTests
 
 # RUNTIME
 
