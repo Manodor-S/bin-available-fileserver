@@ -47,8 +47,6 @@ public class FileResource {
     public Object info() {
         Map<String, Object> map = new HashMap<>();
         map.put("id", nodeConfig.getNodeId());
-        map.put("port", nodeConfig.getNodePort());
-        map.put("replicas", nodeConfig.getReplicas());
         return map;
     }
 }
