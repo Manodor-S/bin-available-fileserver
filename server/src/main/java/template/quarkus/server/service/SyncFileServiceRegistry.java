@@ -7,15 +7,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import jakarta.inject.Singleton;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
+import template.quarkus.common.ChaosSyncFileService;
 import template.quarkus.common.SyncFileService;
 
 @Singleton
 public class SyncFileServiceRegistry {
 
     private static SyncFileService createFileService(String nodeId) {
-        return RestClientBuilder.newBuilder()
+        SyncFileService syncFileService = RestClientBuilder.newBuilder()
                 .baseUri(URI.create("http://" + nodeId + ":8080/api"))
                 .build(SyncFileService.class);
+        return new ChaosSyncFileService(syncFileService);
     }
 
     private final Map<String, SyncFileService> cache = new ConcurrentHashMap<>();
