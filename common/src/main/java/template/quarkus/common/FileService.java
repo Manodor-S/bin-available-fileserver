@@ -1,12 +1,16 @@
 package template.quarkus.common;
 
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
 
 public interface FileService {
 
+    record FileContent(String content) {}
+
     @POST
-    @Path("/queue")
-    void foo(@QueryParam("file") String file);
+    @Path("/{file}")
+    void write(@PathParam("file") String file, FileContent content);
+
+    @GET
+    @Path("/{file}")
+    FileContent read(@PathParam("file") String file);
 }
