@@ -18,7 +18,12 @@
 
     <dependencies>
 
-        <!-- no dependencies in common -->
+        <!-- dependencies in common -->
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-jackson</artifactId>
+        </dependency>
 
         <!-- testing dependencies -->
 
