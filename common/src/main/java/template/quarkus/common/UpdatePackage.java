@@ -1,5 +1,6 @@
 package template.quarkus.common;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class UpdatePackage {
@@ -12,6 +13,13 @@ public class UpdatePackage {
         this.untilVersion = untilVersion;
         this.afterVersion = afterVersion;
         this.files = files;
+    }
+
+    public UpdatePackage(int untilVersion, String name, byte[] file){
+        this.untilVersion = untilVersion;
+        this.afterVersion = untilVersion -1;
+        files = new HashMap<>();
+        files.put(name, new FileEntry(untilVersion, file));
     }
 
     public int getUntilVersion() {

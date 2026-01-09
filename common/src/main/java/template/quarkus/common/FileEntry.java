@@ -1,12 +1,10 @@
 package template.quarkus.common;
 
 public class FileEntry {
-    private final String filename;
     private int version;
     private byte[] data;
 
-    public FileEntry(String filename, int version, byte[] data) {
-        this.filename = filename;
+    public FileEntry(int version, byte[] data) {
         this.version = version;
         this.data = data;
     }
@@ -22,9 +20,6 @@ public class FileEntry {
         return this;
     }
 
-    public String getFilename() {
-        return filename;
-    }
 
     public int getVersion() {
         return version;

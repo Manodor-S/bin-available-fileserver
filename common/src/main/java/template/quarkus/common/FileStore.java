@@ -12,12 +12,17 @@ public class FileStore {
 
     public int updateFileStore(UpdatePackage message) {
         if(message.getUntilVersion() <= latestVersion) return -2;
-        if(latestVersion - message.getAfterVersion() > 1) return latestVersion;
-        message.getFiles().forEach((filename, fileEntry) -> {
-            store.put(filename, fileEntry);
+        if(message.getAfterVersion() - latestVersion != 0) return latestVersion;
+        message.getFiles().forEach((name, file) -> {
+            store.put(name, file);
         });
         latestVersion = message.getUntilVersion();
         return 0;
+    }
+
+    public void writeFile(String name, byte[] file){
+        latestVersion++;
+        store.put(name, new FileEntry(latestVersion, file));
     }
 
     public FileEntry getFileEntry(String filename) {

@@ -15,8 +15,8 @@ public class ClientFileServiceResource implements ClientFileService {
     public ClientFileServiceResource() {}
 
     @Override
-    public void write(UpdatePackage updatePackage) {
-        fileService.writeThrough(updatePackage);
+    public int write(UpdatePackage updatePackage) {
+        return fileService.writeThrough(updatePackage);
     }
 
     @Override

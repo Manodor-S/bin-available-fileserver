@@ -6,6 +6,9 @@ target/
 *.iml
 *.iws
 
+# Vscode
+.vscode
+
 # Eclipse
 .classpath
 .project

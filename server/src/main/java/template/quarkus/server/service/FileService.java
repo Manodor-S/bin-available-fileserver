@@ -1,6 +1,7 @@
 package template.quarkus.server.service;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import template.quarkus.common.SyncFileService;
 import template.quarkus.common.UpdatePackage;
+import template.quarkus.common.FileEntry;
 import template.quarkus.common.FileStore;
 
 @ApplicationScoped
@@ -34,17 +36,16 @@ public class FileService {
         syncFileServiceReplicas = syncFileServiceRegistry.getAllRegistered();
     }
 
-    //Funktion für vom main Server zu Replikas
+    //Funktion die vom main Server aufgerufen wird
     public int store(UpdatePackage updatePackage) {
         return filestore.updateFileStore(updatePackage);
     }
 
     //Funktion die vom Client aufgerufen wird
-    public int writeThrough(UpdatePackage updatePackage) {
-        int localStatusCode = store(updatePackage);
-        if(localStatusCode > 0) return localStatusCode;
+    public int writeThrough(String name, byte[] file) {
+        filestore.writeFile(name, file);
         syncFileServiceReplicas.parallelStream().forEach(fs -> {
-            UpdatePackage nodePackage = updatePackage;
+            UpdatePackage nodePackage = new UpdatePackage(filestore.getLatestVersion(), name, file);
             int returnStatusCode;
             do{
                 returnStatusCode = fs.sync(nodePackage);
